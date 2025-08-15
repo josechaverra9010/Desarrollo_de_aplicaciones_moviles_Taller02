@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "plugins": [
+      "expo-router"
+    ],
+    "name": "Taller02_imanol",
+    "slug": "Taller02_imanol"
+  }
+}

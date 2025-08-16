@@ -3,6 +3,9 @@ import { View, FlatList, Image, TextInput, StyleSheet } from 'react-native';
 import { Text, Button, Card, useTheme } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 
+// Import the JSON data file
+import productos from '../assets/productos.json';
+
 export default function ListaElementos() {
   const router = useRouter();
   const { colors } = useTheme();
@@ -16,51 +19,28 @@ export default function ListaElementos() {
     borderColor: '#f9a825',
   };
 
-  const devilFruits = [
-    {
-      id: '1',
-      titulo: 'Gomu Gomu no Mi',
-      descripcion: 'Una fruta del Diablo de tipo Paramecia que le da a su usuario la habilidad de estirar su cuerpo como la goma.',
-      urlImagen: 'https://i.imgur.com/uNf4H3B.png', // Placeholder para imagen de la Gomu Gomu no Mi
-    },
-    {
-      id: '2',
-      titulo: 'Mera Mera no Mi',
-      descripcion: 'Una fruta del Diablo de tipo Logia que le permite a su usuario crear, controlar y transformarse en fuego.',
-      urlImagen: 'https://i.imgur.com/k9vjT1h.png', // Placeholder para imagen de la Mera Mera no Mi
-    },
-    {
-      id: '3',
-      titulo: 'Ope Ope no Mi',
-      descripcion: 'Una fruta del Diablo de tipo Paramecia que le otorga a su usuario la capacidad de crear una esfera territorial donde puede manipular todo a su antojo.',
-      urlImagen: 'https://i.imgur.com/vH9F4lR.png', // Placeholder para imagen de la Ope Ope no Mi
-    },
-    {
-      id: '4',
-      titulo: 'Hito Hito no Mi',
-      descripcion: 'Una fruta del Diablo de tipo Zoan que le permite a su usuario transformarse en un híbrido humano y un animal, como Tony Tony Chopper.',
-      urlImagen: 'https://i.imgur.com/Qp4t2Zt.png', // Placeholder para imagen de la Hito Hito no Mi
-    },
-  ];
-
-  const [lista, setLista] = useState(devilFruits);
+  const [lista, setLista] = useState(productos);
   const [busqueda, setBusqueda] = useState('');
 
   useEffect(() => {
     if (busqueda) {
-      const filtrados = devilFruits.filter(item =>
+      const filtrados = productos.filter(item =>
         item.titulo.toLowerCase().includes(busqueda.toLowerCase())
       );
       setLista(filtrados);
     } else {
-      setLista(devilFruits);
+      setLista(productos);
     }
   }, [busqueda]);
 
   const renderItem = ({ item }) => (
     <Card style={[styles.card, { backgroundColor: onePieceColors.cardBackground, borderColor: onePieceColors.borderColor }]}>
       <Card.Content>
-        <Image source={require('../assets/hom.png')} style={styles.cardImage} />
+        <Image 
+          source={{ uri: item.imagen }} 
+          style={styles.cardImage}
+          accessibilityLabel={`Imagen de ${item.titulo}`}
+        />
         <Text variant="titleLarge" style={[styles.cardTitle, { color: onePieceColors.text }]}>
           {item.titulo}
         </Text>
@@ -70,7 +50,7 @@ export default function ListaElementos() {
       </Card.Content>
       <Card.Actions>
         <Button
-          onPress={() => router.push({ pathname: '/detalle-elemento', params: { id: item.id } })}
+          onPress={() => router.push({ pathname: '/detalle-elemento', params: { id: item.id.toString() } })}
           labelStyle={{ color: onePieceColors.primary }}
         >
           Ver detalles
@@ -82,7 +62,7 @@ export default function ListaElementos() {
   return (
     <View style={[styles.container, { backgroundColor: onePieceColors.background }]}>
       <TextInput
-        placeholder="Buscar Fruta del Diablo..."
+        placeholder="Buscar producto..."
         value={busqueda}
         onChangeText={setBusqueda}
         style={[styles.searchbar, { backgroundColor: onePieceColors.cardBackground, color: onePieceColors.text, borderColor: onePieceColors.borderColor }]}
@@ -125,6 +105,7 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 8,
     marginBottom: 12,
+    resizeMode: 'cover',
   },
   cardTitle: {
     fontWeight: 'bold',
